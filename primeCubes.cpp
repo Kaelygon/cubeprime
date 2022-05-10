@@ -90,7 +90,7 @@ int main( int argc, char *argv[] ){
 				__uint128_t n=a2v[c];
 				__uint128_t out = (mo+n); //A^3+B^3+C^3
 				
-				int mod9 = fmod(out,9);
+				int mod9 = fastmod(out,9);
 				if(mod9!=1 && mod9!=8){continue;} //always true (P^3=A^3+B^3+C^3)%9 = 1,8
 
 				__uint64_t iPC=binCube(out); //binary search cube

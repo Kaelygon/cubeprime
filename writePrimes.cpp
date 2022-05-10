@@ -1,5 +1,34 @@
 
 #include "functions.h"
+#include <math.h>
+
+__uint64_t bigPif; //biggest prime in file
+
+void frst( string ffil="./data/primes.bin" ){ //file reset
+	ofstream ffilrst(ffil, ios::out | ios::binary );
+		ffilrst << "";
+	ffilrst.close();
+}
+
+void writeP(__uint64_t n){
+//	if( find(a1v.begin(), a1v.end(),n)==a1v.end() ){ //check if n is in array
+		a1v.push_back(n); 
+//		if(bigP<n){
+			bigP=n;
+//		}
+//	}
+}
+
+void wtofile(){
+	for(auto &P : a1v) //go through array of primes
+	{
+		if(P<=bigPif){continue;} //skip if smaller than biggest prime in array
+
+		string pstr = ui128tos(P);
+		filepw << pstr; //write to file
+		filepw << ',';
+	}
+}
 
 int main( int argc, char *argv[] ){
 //	frst();
