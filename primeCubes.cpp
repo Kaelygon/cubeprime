@@ -281,7 +281,7 @@ int main( int argc, char *argv[] ){
 
 	clock_t st=clock();
 	
-	for(__uint64_t a=t;1;a++){// A
+	for(__uint64_t a=t;a<s;a++){// A
 
 		__uint128_t o=a2v[a];
 		if(o>s3){break;}
