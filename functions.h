@@ -1,22 +1,17 @@
 #include <iostream>
-#include <math.h>
-#include <fstream>
 #include <sstream>
+#include <fstream>
 #include <vector>
-#include <algorithm>
-#include <iterator>
-
-
-using namespace std;
+#include <time.h>
 
 #define MAX__UINT128 (__uint128_t)(-1)
 #define MAX__UINT64 (__uint64_t)(-1)
 
 typedef struct{ char buf[16]; } _128bit; //128-bit
 
-__uint64_t bigP;
-__uint64_t bigPif; //biggest prime in file
+using namespace std;
 
+__uint64_t bigP;
 vector<__uint128_t> a1v; //primes
 vector<__uint128_t> a2v; //cubes : a2v[n]=n^3
 
@@ -120,7 +115,7 @@ T fsqrt128(T N) //return floor(sqrt(N))
 	
 }
 
-int fmod(__uint128_t input, const int ceil) {
+int fastmod(const int input, const int ceil) {
     // apply the modulo operator only when needed
     // (i.e. when the input is greater than the ceiling)
     return input >= ceil ? input % ceil : input;
@@ -131,19 +126,20 @@ static inline int isodd(int x) { return x & 1; }
 
 //EOF kmath
 
-//BOF read functions
-
 string ui128tos(__uint128_t n){//128 uint to string
-	string out = "";
+	string str = "";
 
 	while(n!=0){
-		out+=to_string( (__uint8_t)(n%10) );
+		str+=to_string( (__uint8_t)(n%10) );
 		n/=10;
 	}
 	
-	reverse(out.begin(), out.end());
-	
-	return out;
+	string inv = "";
+	for( int i=str.size()-1;i>=0;i-- ){
+		inv+=str[i];
+	}
+
+	return inv;
 }
 
 ifstream::pos_type filesize(string filename)
@@ -155,7 +151,7 @@ ifstream::pos_type filesize(string filename)
 int cArrayP(__uint128_t n){//test vector divisors
 	for(auto &P : a1v) //go through vector of primes
 	{
-		if( fmod((__uint128_t)n,__uint128_t(P)) == 0 ){
+		if( fastmod(n,__uint128_t(P)) == 0 ){
 			return 0;
 		}else if( P>fsqrt128(n) ){
 			return 1;
@@ -187,38 +183,6 @@ T binCube(T n)
 	
 	return 0;
 }
-
-void frst( string ffil="./data/primes.bin" ){ //file reset
-	ofstream ffilrst(ffil, ios::out | ios::binary );
-		ffilrst << "";
-	ffilrst.close();
-}
-
-void writeP(__uint64_t n){
-//	if( find(a1v.begin(), a1v.end(),n)==a1v.end() ){ //check if n is in array
-		a1v.push_back(n); 
-//		if(bigP<n){
-			bigP=n;
-//		}
-//	}
-}
-
-
-
-void wtofile(){
-	for(auto &P : a1v) //go through array of primes
-	{
-		if(P<=bigPif){continue;} //skip if smaller than biggest prime in array
-
-		string pstr = ui128tos(P);
-		filepw << pstr; //write to file
-		filepw << ',';
-	}
-}
-
-//EOF write func
-
-//EOF write functions
 
 //brute logarithmic search 128-bit cube (slower than binary search)
 template <class T>
