@@ -10,7 +10,6 @@
 			"args": [
 				"-g",
 				"-std=c++11",
-				"-pthread",
 				"${file}",
 				"-o",
 				"${fileDirname}/${fileBasenameNoExtension}"

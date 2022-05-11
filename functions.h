@@ -11,19 +11,19 @@ typedef struct{ char buf[16]; } _128bit; //128-bit
 
 using namespace std;
 
-__uint64_t bigP;
-vector<__uint128_t> a1v; //primes
-vector<__uint128_t> a2v; //cubes : a2v[n]=n^3
+static __uint64_t bigP;
+static vector<__uint128_t> a1v; //primes
+static vector<__uint128_t> a2v; //cubes : a2v[n]=n^3
 
 //list of primes
 string filep="./data/primes.bin";
 ofstream filepw(filep, ios::out | ios::binary | ios::app );
 
 //BOF kmath
-
-__uint128_t ui128pow( __uint128_t m, __uint128_t n) //128-bit pow
+template <class T>
+T ui128pow( T m, T n) //128-bit pow
 {
-	__uint128_t o=m;
+	T o=m;
 
 	while(n>1){
 		n--;
@@ -33,13 +33,50 @@ __uint128_t ui128pow( __uint128_t m, __uint128_t n) //128-bit pow
 }
 
 //table of 10s
-__uint128_t tabp10[39]={ //10, 100 ... 10^39
-	ui128pow(10,1),	ui128pow(10,2),	ui128pow(10,3),	ui128pow(10,4),	ui128pow(10,5),	ui128pow(10,6),	ui128pow(10,7),	ui128pow(10,8),	ui128pow(10,9),	ui128pow(10,10),	ui128pow(10,11),	ui128pow(10,12),	ui128pow(10,13),	ui128pow(10,14),	ui128pow(10,15),	ui128pow(10,16),	ui128pow(10,17),	ui128pow(10,18),	ui128pow(10,19),	ui128pow(10,20),	ui128pow(10,21),	ui128pow(10,22),	ui128pow(10,23),	ui128pow(10,24),	ui128pow(10,25),	ui128pow(10,26),	ui128pow(10,27),	ui128pow(10,28),	ui128pow(10,29),	ui128pow(10,30),	ui128pow(10,31),	ui128pow(10,32),	ui128pow(10,33),	ui128pow(10,34),	ui128pow(10,35),	ui128pow(10,36),	ui128pow(10,37),	ui128pow(10,38),	ui128pow(10,39)
+static const __uint128_t tabp10[39]={ //10, 100 ... 10^39
+	ui128pow((__uint128_t)10,(__uint128_t)1),	
+	ui128pow((__uint128_t)10,(__uint128_t)2),	
+	ui128pow((__uint128_t)10,(__uint128_t)3),	
+	ui128pow((__uint128_t)10,(__uint128_t)4),	
+	ui128pow((__uint128_t)10,(__uint128_t)5),	
+	ui128pow((__uint128_t)10,(__uint128_t)6),	
+	ui128pow((__uint128_t)10,(__uint128_t)7),	
+	ui128pow((__uint128_t)10,(__uint128_t)8),	
+	ui128pow((__uint128_t)10,(__uint128_t)9),	
+	ui128pow((__uint128_t)10,(__uint128_t)10),	
+	ui128pow((__uint128_t)10,(__uint128_t)11),	
+	ui128pow((__uint128_t)10,(__uint128_t)12),	
+	ui128pow((__uint128_t)10,(__uint128_t)13),	
+	ui128pow((__uint128_t)10,(__uint128_t)14),	
+	ui128pow((__uint128_t)10,(__uint128_t)15),	
+	ui128pow((__uint128_t)10,(__uint128_t)16),	
+	ui128pow((__uint128_t)10,(__uint128_t)17),	
+	ui128pow((__uint128_t)10,(__uint128_t)18),	
+	ui128pow((__uint128_t)10,(__uint128_t)19),	
+	ui128pow((__uint128_t)10,(__uint128_t)20),	
+	ui128pow((__uint128_t)10,(__uint128_t)21),	
+	ui128pow((__uint128_t)10,(__uint128_t)22),	
+	ui128pow((__uint128_t)10,(__uint128_t)23),	
+	ui128pow((__uint128_t)10,(__uint128_t)24),	
+	ui128pow((__uint128_t)10,(__uint128_t)25),	
+	ui128pow((__uint128_t)10,(__uint128_t)26),	
+	ui128pow((__uint128_t)10,(__uint128_t)27),	
+	ui128pow((__uint128_t)10,(__uint128_t)28),	
+	ui128pow((__uint128_t)10,(__uint128_t)29),	
+	ui128pow((__uint128_t)10,(__uint128_t)30),	
+	ui128pow((__uint128_t)10,(__uint128_t)31),	
+	ui128pow((__uint128_t)10,(__uint128_t)32),	
+	ui128pow((__uint128_t)10,(__uint128_t)33),	
+	ui128pow((__uint128_t)10,(__uint128_t)34),	
+	ui128pow((__uint128_t)10,(__uint128_t)35),	
+	ui128pow((__uint128_t)10,(__uint128_t)36),	
+	ui128pow((__uint128_t)10,(__uint128_t)37),	
+	ui128pow((__uint128_t)10,(__uint128_t)38),	
+	ui128pow((__uint128_t)10,(__uint128_t)39)
 };
 
-//count digits
-template <class T>
-T ui128log10(T n)  
+//count digits, log10
+int ui128log10(__uint128_t n)  
 {  
     return 
 		(n < tabp10[0] ? 0 :   
@@ -126,7 +163,8 @@ static inline int isodd(int x) { return x & 1; }
 
 //EOF kmath
 
-string ui128tos(__uint128_t n){//128 uint to string
+template <class T>
+string ui128tos(T n){//128 uint to string
 	string str = "";
 
 	while(n!=0){
@@ -148,10 +186,11 @@ ifstream::pos_type filesize(string filename)
     return in.tellg(); 
 }
 
-int cArrayP(__uint128_t n){//test vector divisors
+template <class T>
+int cArrayP(T n){//test vector divisors
 	for(auto &P : a1v) //go through vector of primes
 	{
-		if( fastmod(n,__uint128_t(P)) == 0 ){
+		if( fastmod(n,T(P)) == 0 ){
 			return 0;
 		}else if( P>fsqrt128(n) ){
 			return 1;

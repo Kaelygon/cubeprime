@@ -11,18 +11,17 @@ int main( int argc, char *argv[] ){
 	//threads
 	int tc=0; //thread count
 	int cc=0; //current thread
-
-	if( argv[1]!="" ){
+	int debug=1; //1=print info
+	
+	if( argc>1 ){
 		tc = stoi(argv[1]);
 	}
-
-	if( argv[2]!="" ){
+	if( argc>2 ){
 		cc = stoi(argv[2]);
 	}
-
-	int tinc = tc; //thread increment
-	int tsr = cc; //start offset
-	int ten =-cc; //end offset
+	if( argc>3 ){
+		debug = stoi(argv[3]);
+	}
 
 	//read and transfer prime file to str
 	string str;
@@ -46,8 +45,12 @@ int main( int argc, char *argv[] ){
 	//clear string
 	ss.str("");
 
-	__uint128_t s=20000+1; //check set [t,s[ 		//if t=0, total checked values, approx: s^2.5		//bigO x/9.5
-	__uint128_t t=0;
+	static const __uint128_t s=1000+1; //check set [t,s[ 		//if t=0, total checked values, approx: s^2.5		//bigO x/9.5
+	static const __uint128_t t=0;
+
+	//calculate C range offsets per thread
+	static const int cend=s+-cc; //C end
+	static const int cinc=1+tc; //C increment
 
 	//pre-generate cubes
 	for(__uint128_t i=0;i<s;i+=1){
@@ -63,26 +66,26 @@ int main( int argc, char *argv[] ){
 		cout << "Prime list may not be sufficient\n";
 	}
 
-	__uint128_t s3=s*s*s; //P^3
+	static const __uint128_t s3=s*s*s; //s^3
 	
 	__uint64_t found=0; 
 
 	clock_t st=clock();
 	
-	for(__uint64_t a=t;a<s;a++){// A
+	for(__uint64_t a=t;true;a++){// A
 
 		__uint128_t o=a2v[a];
-
-		for(__uint64_t b=a+1;b<s;b++){// B
+		if(o>s3){break;}
+		for(__uint64_t b=a+1;true;b++){// B
 
 			__uint128_t m=a2v[b]; //get cube from vector
 			__uint128_t mo=m+o; //A^3+B^3 //mo%9 = 0,1,2,7,8
 
 			if(mo>s3){break;}
 			for(__uint64_t //apply offsets per thread
-				c=b+1	+tsr;
-				c<s		+ten;
-				c+=1	+tinc
+				c= b+1+cc	;
+				c< cend		;
+				c+=cinc
 			){// C
 			
 				if( !isodd(a+b+c) ){continue;} //Can not be even
@@ -97,8 +100,7 @@ int main( int argc, char *argv[] ){
 
 				if(iPC!=0){
 
-					//check prime
-					__uint64_t isP=cArrayP(iPC);
+					int isP=cArrayP(iPC); //check prime
 
 					if(
 						isP>0
@@ -124,5 +126,5 @@ int main( int argc, char *argv[] ){
 	cout << "took: " << int(clock()-st) << "\n";
 	cout << "found: " << found << "\n";
 
-	filepw.close();	
+	filepw.close();
 }
