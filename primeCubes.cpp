@@ -76,7 +76,7 @@ int main( int argc, char *argv[] ){
 
 		__uint128_t o=a2v[a];
 		if(o>s3){break;}
-		for(__uint64_t b=a+1;true;b++){// B
+		for(__uint64_t b=a+1;b<s;b++){// B
 
 			__uint128_t m=a2v[b]; //get cube from vector
 			__uint128_t mo=m+o; //A^3+B^3 //mo%9 = 0,1,2,7,8
