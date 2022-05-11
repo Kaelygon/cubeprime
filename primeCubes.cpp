@@ -45,7 +45,7 @@ int main( int argc, char *argv[] ){
 	//clear string
 	ss.str("");
 
-	static const __uint128_t s=1000+1; //check set [t,s[ 		//if t=0, total checked values, approx: s^2.5		//bigO x/9.5
+	static const __uint128_t s=1000+1; //check set [t,s[ 		//if t=0, total checked values approx: s^3/3. Because if a>s/3 then a^3+b^3+c^3>s^3. All the possible combinations are done when a>s/3 
 	static const __uint128_t t=0;
 
 	//calculate C range offsets per thread
@@ -72,17 +72,24 @@ int main( int argc, char *argv[] ){
 
 	clock_t st=clock();
 	
-	for(__uint64_t a=t;true;a++){// A
+	//init vars
+	__uint128_t o,m,mo,out,n;
+	__uint64_t a,b,c;
+	int mod9,isP;
 
-		__uint128_t o=a2v[a];
+//	int counter=0;
+
+	for(a=t;true;a++){// A
+
+		o=a2v[a];
 		if(o>s3){break;}
 		for(__uint64_t b=a+1;b<s;b++){// B
 
-			__uint128_t m=a2v[b]; //get cube from vector
-			__uint128_t mo=m+o; //A^3+B^3 //mo%9 = 0,1,2,7,8
+			m=a2v[b]; //get cube from vector
+			mo=m+o; //A^3+B^3 //mo%9 = 0,1,2,7,8
 
 			if(mo>s3){break;}
-			for(__uint64_t //apply offsets per thread
+			for( //apply offsets per thread
 				c= b+1+cc	;
 				c< cend		;
 				c+=cinc
@@ -90,17 +97,17 @@ int main( int argc, char *argv[] ){
 			
 				if( !isodd(a+b+c) ){continue;} //Can not be even
 
-				__uint128_t n=a2v[c];
-				__uint128_t out = (mo+n); //A^3+B^3+C^3
+				n=a2v[c];
+				out = (mo+n); //A^3+B^3+C^3
 				
-				int mod9 = fastmod(out,9);
+				mod9 = fastmod(out,9);
 				if(mod9!=1 && mod9!=8){continue;} //always true (P^3=A^3+B^3+C^3)%9 = 1,8
 
 				__uint64_t iPC=binCube(out); //binary search cube
 
 				if(iPC!=0){
 
-					int isP=cArrayP(iPC); //check prime
+					isP=cArrayP(iPC); //check prime
 
 					if(
 						isP>0

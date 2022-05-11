@@ -7,7 +7,7 @@
 #define MAX__UINT128 (__uint128_t)(-1)
 #define MAX__UINT64 (__uint64_t)(-1)
 
-typedef struct{ char buf[16]; } _128bit; //128-bit
+typedef struct{ uint32_t buf[4]; } _128bit; //128-bit
 
 using namespace std;
 
@@ -21,7 +21,7 @@ ofstream filepw(filep, ios::out | ios::binary | ios::app );
 
 //BOF kmath
 template <class T>
-T ui128pow( T m, T n) //128-bit pow
+inline T ui128pow( T m, T n) //128-bit pow
 {
 	T o=m;
 
@@ -76,7 +76,7 @@ static const __uint128_t tabp10[39]={ //10, 100 ... 10^39
 };
 
 //count digits, log10
-int ui128log10(__uint128_t n)  
+inline int ui128log10(__uint128_t n)  
 {  
     return 
 		(n < tabp10[0] ? 0 :   
@@ -123,7 +123,7 @@ int ui128log10(__uint128_t n)
 }
 
 template <class T>
-T ui128pow10(T n) 
+inline T ui128pow10(T n) 
 {
 	return tabp10[n];
 }
@@ -152,7 +152,7 @@ T fsqrt128(T N) //return floor(sqrt(N))
 	
 }
 
-int fastmod(const int input, const int ceil) {
+inline int fastmod(const int input, const int ceil) {
     // apply the modulo operator only when needed
     // (i.e. when the input is greater than the ceiling)
     return input >= ceil ? input % ceil : input;
@@ -182,7 +182,7 @@ string ui128tos(T n){//128 uint to string
 
 ifstream::pos_type filesize(string filename)
 {
-    ifstream in(filep, std::ifstream::ate | std::ifstream::binary);
+    ifstream in(filep, ifstream::ate | ifstream::binary);
     return in.tellg(); 
 }
 
