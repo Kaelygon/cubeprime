@@ -11,7 +11,7 @@ int main( int argc, char *argv[] ){
 	//threads
 	int tc=0; //thread count
 	int cc=0; //current thread
-	int debug=1; //1=print info
+	int debug=1; //1=print some 2=print all
 	
 	if( argc>1 ){
 		tc = stoi(argv[1]);
@@ -59,11 +59,13 @@ int main( int argc, char *argv[] ){
 
 	bigP=a1v[a1v.size()-1]; //biggest prime
 
-	cout << "size " << a2v.size() << " cubes \n";
-	cout << "size " << a1v.size() << " bigP " << bigP << "\n";
+	if(debug>1){
+		cout << "#size " << a2v.size() << " cubes \n";
+		cout << "#size " << a1v.size() << " bigP " << bigP << "\n";
 
-	if(bigP<=fsqrt128(s)){
-		cout << "Prime list may not be sufficient\n";
+		if(bigP<=fsqrt128(s)){
+			cout << "#Prime list may not be sufficient\n";
+		}
 	}
 
 	static const __uint128_t s3=s*s*s; //s^3
@@ -129,9 +131,9 @@ int main( int argc, char *argv[] ){
 			}
 		}
 	}
-
-	cout << "took: " << int(clock()-st) << "\n";
-	cout << "found: " << found << "\n";
-
+if(debug>0){
+	cout << "#took: " << int(clock()-st) << "\n";
+	cout << "#found: " << found << "\n";
+}
 	filepw.close();
 }
