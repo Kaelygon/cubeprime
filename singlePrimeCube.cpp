@@ -1,17 +1,20 @@
 //oeis A157026
+//
+//g++ -std=c++11 ./singlePrimeCube.cpp -o singlePrimeCube
+//
+//Finds P for P^3=A^3+B^3+C^3 where P is prime and A,B,C are unique positive integers
+//singlePrimeCube [thread] [thread count] [start] [P]
+//
 
 #include "functions.h"
 
-//13238717
-//s=13238717+1 t=1
-//Find primes form P^3=A^3+B^3+C^3 where P is prime and [ t < a,b,c = s ]
-//pcube [thread] [thread count]
 int main( int argc, char *argv[] ){
 
 	//threads
 	int tc=0; //thread count
 	int cc=0; //current thread
-	int tstart=0; //start
+	__uint64_t tstart=0; //start
+	__uint64_t tend=8191; //end
 	
 	if( argc>1 ){
 		tc = stoi(argv[1]);
@@ -22,22 +25,20 @@ int main( int argc, char *argv[] ){
 	if( argc>3 ){
 		tstart = stoi(argv[3]);
 	}
-
-	static const __uint128_t nuse = 13238717; //finds nuse for nuse^3=A^3+B^3+C^3
-	static const __uint128_t s=nuse+1; //check set [t,s[ 		//time increases proportionately s^2 //compute time,  i7 7800x @ 4.5, s^2/37.5/[threads]/10^6 seconds
-	static const __uint128_t t=tstart;
-
-	//calculate C range offsets per thread
-	static const int bend=s-cc; //B end
-	static const int binc=1+tc; //B increment
-
-	//pre-generate cubes
-	for(__uint128_t i=0;i<s+1;i+=1){
-		a2v.push_back(i*i*i);
+	if( argc>4 ){
+		tend = stoi(argv[4]);
 	}
 
+	static const __uint128_t nuse=tend; //finds nuse for nuse^3=A^3+B^3+C^3 	//check set [t,s] 	//time increases proportionately s^2 //compute time,  i7 7800x @ 4.5, s^2/37.5/[threads]/10^6 seconds
+	static const __uint128_t s=nuse+1; 
+	static const __uint128_t t=tstart;
+
+	//calculate B range offsets per thread
+	static const __uint64_t bend=s-cc; //B end
+	static const __uint32_t binc=1+tc; //B increment
+
 	static const __uint128_t s3=s*s*s; //s^3
-	static const __uint128_t nuSe3=nuse*nuse*nuse; //s^3
+	static const __uint128_t nuSe3=nuse*nuse*nuse; //(s+1)^3
 	
 	__uint64_t found=0; 
 	
@@ -49,9 +50,9 @@ int main( int argc, char *argv[] ){
 
 	for(a=t;true;a++){// A
 
-		a3=a2v[a];
+		a3=a*a*a;
 		if(a3>nuSe3){break;}
-		if( !(a&111) ){
+		if( a%256==0 ){
 			cout << "#a[" << cc << "]: " << a << "\n";
 		}
 		for(
@@ -60,23 +61,22 @@ int main( int argc, char *argv[] ){
 			b+=binc
 		){// B
 
-			b3=a2v[b]; //get cube from vector
+			b3=b*b*b; //get cube from vector
 			ab3=a3+b3;
 
 			if(ab3>nuSe3){break;}
 			//C
 				c=b+1;
 
-				c3=a2v[c];
+				c3=c*c*c;
 				if((ab3+c3)>nuSe3){break;}
 				
-				
 				//binary search c3
-				upb = a2v.size()-1;	//upper bound
+				upb = nuse-1;	//upper bound
 				cur = (c+upb)/2;	//current estimate
 				while(c <= upb)
 				{
-					c3=a2v[cur];
+					c3=cur*cur*cur;
 					abc3=ab3+c3;
 					if(abc3<nuSe3)
 						c = cur+1;
@@ -105,7 +105,7 @@ int main( int argc, char *argv[] ){
 			//EOF C
 		}
 	}
-
+	
 	cout << "#took: " << int(clock()-st) << "\n";
 	cout << "#found: " << found << "\n";
 

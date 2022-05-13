@@ -5,15 +5,16 @@ wk="datath"
 file="x"
 prog="singlePrimeCube"
 laso=$(cat ./datath/lastSolve.txt | grep -o '[^ ]\+$' )
+end=13238717
 
-tc=10 #tc=[yourThreadCount]-1
+tc=11 #tc=[yourThreadCount]-1
 
 trap ctrl_c INT
 
 function ctrl_c() {
 
 	pkill -f ./${prog}
-	laso=$(ls ./${wk}/*x.txt | xargs cat | tail -n 1 | sort -n | head -n 1 | grep -o '[^ ]\+$' )
+	laso=$( ls ./*x.txt | xargs -I {} sh -c "cat {} | tail -1" | sort -n -k4 | head -1 | grep -o '[^ ]\+$' ) #least progressed core 
 	echo "laso: $laso"
 
 	echo -n $laso > ./$wk/lastSolve.txt
@@ -31,7 +32,7 @@ echo "laso: $laso"
 for i in $( eval echo {0..$tc} )
 do
 
-	unbuffer ./${prog} ${tc} ${i} ${laso} | tee -a ./$wk/${i}${file}".txt" &
+	unbuffer ./${prog} ${tc} ${i} ${laso} ${end} | tee -a ./$wk/${i}${file}".txt" &
 
 done
 

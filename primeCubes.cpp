@@ -1,17 +1,21 @@
 //oeis A157026
+//
+//g++ -std=c++11 ./singlePrimeCube.cpp -o singlePrimeCube
+//
+//Goes through every combination of unique positive integers for A^3+B^3+C^3, checks if the sum if perfect cube and checks if its cube root is a prime. 
+//Reads primes from file ./data/primes.bin, assuming it's sorted ascending and has primes up to ceil(sqrt(13238717+1))+1
+//singlePrimeCube [thread] [thread count] [start] [end]
+//
 
 #include "functions.h"
 
-//13238717
-//s=13238717+1 t=1
-//Find primes form P^3=A^3+B^3+C^3 where P is prime and [ t < a,b,c = s ]
-//pcube [thread] [thread count]
 int main( int argc, char *argv[] ){
 
 	//threads
 	int tc=0; //thread count
 	int cc=0; //current thread
-	int debug=1; //1=print some 2=print all
+	__uint64_t tstart=0; //start
+	__uint64_t tend=991; //end
 	
 	if( argc>1 ){
 		tc = stoi(argv[1]);
@@ -20,8 +24,12 @@ int main( int argc, char *argv[] ){
 		cc = stoi(argv[2]);
 	}
 	if( argc>3 ){
-		debug = stoi(argv[3]);
+		tstart = stoi(argv[3]);
 	}
+	if( argc>4 ){
+		tend = stoi(argv[4]);
+	}
+
 
 	//read and transfer prime file to str
 	string str;
@@ -45,12 +53,12 @@ int main( int argc, char *argv[] ){
 	//clear string
 	ss.str("");
 
-	static const __uint128_t s=1000+1; //check set [t,s[ 		//if t=0, total checked values approx: s^3/3. Because if a>s/3 then a^3+b^3+c^3>s^3. All the possible combinations are done when a>s/3 
-	static const __uint128_t t=0;
+	static const __uint128_t s=tend+1; //check set [t,s[ 		//if t=0, total checked values approx: s^3/3. Because if a>s/3 then a^3+b^3+c^3>s^3. All the possible combinations are done when a>s/3 
+	static const __uint128_t t=tstart;
 
 	//calculate C range offsets per thread
-	static const int cend=s+-cc; //C end
-	static const int cinc=1+tc; //C increment
+	static const __uint64_t cend=s+-cc; //C end
+	static const __uint32_t cinc=1+tc; //C increment
 
 	//pre-generate cubes
 	for(__uint128_t i=0;i<s;i+=1){
@@ -59,14 +67,13 @@ int main( int argc, char *argv[] ){
 
 	bigP=a1v[a1v.size()-1]; //biggest prime
 
-	if(debug>1){
-		cout << "#size " << a2v.size() << " cubes \n";
-		cout << "#size " << a1v.size() << " bigP " << bigP << "\n";
+	cout << "#size " << a2v.size() << " cubes \n";
+	cout << "#size " << a1v.size() << " bigP " << bigP << "\n";
 
-		if(bigP<=fsqrt128(s)){
-			cout << "#Prime list may not be sufficient\n";
-		}
+	if(bigP<=fsqrt128(s)){
+		cout << "#Prime list may not be sufficient\n";
 	}
+
 
 	static const __uint128_t s3=s*s*s; //s^3
 	
@@ -131,9 +138,9 @@ int main( int argc, char *argv[] ){
 			}
 		}
 	}
-if(debug>0){
+	
 	cout << "#took: " << int(clock()-st) << "\n";
 	cout << "#found: " << found << "\n";
-}
+
 	filepw.close();
 }

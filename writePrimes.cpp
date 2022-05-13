@@ -31,7 +31,16 @@ void wtofile(){
 }
 
 int main( int argc, char *argv[] ){
-//	frst();
+
+	__uint64_t tend = 8191;
+	if( argc>1 ){
+		tend=stoi(argv[1]);
+	}
+	if( argc>2 ){
+		if( stoi(argv[2]) == 1 ){
+			frst();
+		}
+	}
 
 	string str;
 	ifstream filepr(filep, ios::in | ios::binary );
@@ -63,7 +72,7 @@ int main( int argc, char *argv[] ){
 
 	cout << "Stored primes " << a1v.size() << " bigP " << bigP << "\n";
 
-	int s=ceil(sqrt(13238717+1)); //check and write primes up to s, ceil sqrt(num)
+	int s=ceil(sqrt(tend)); //check and write primes up to s, ceil sqrt(num)
 
 	int si=bigP;
 	if( si%2==0 ){ //make sure it's odd

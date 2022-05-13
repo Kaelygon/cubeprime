@@ -3,6 +3,8 @@
 
 wk="datath"
 file="x"
+laso=0
+end=19919
 
 tc=11 #tc=[yourThreadCount]-1
 
@@ -20,9 +22,9 @@ function ctrl_c() {
 
 for i in $( eval echo {0..$tc} )
 do
-	echo "" > ./$wk/${i}${file}".txt"
+#	echo "" > ./$wk/${i}${file}".txt" #reset file
 	
-	unbuffer ./primeCubes ${tc} ${i} | tee ./$wk/${i}${file}".txt" &
+	unbuffer ./primeCubes ${tc} ${i} ${laso} ${end} | tee ./$wk/${i}${file}".txt" &
 
 done
 

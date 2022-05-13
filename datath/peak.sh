@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "found:"
-ls *x.txt | xargs grep -v '#'
+ls *x.txt | xargs grep -v '#' | tail -n 20
 echo "min - max:"
-ls *x.txt | xargs cat | tail -n 12 | sort -n | head -n 1
-ls *x.txt | xargs cat | tail -n 12 | sort -n | tail -n 1
+ls ./*x.txt | xargs -I {} sh -c "cat {} | tail -1" | sort -n -k4 | head -1 #least progressed core 
+ls ./*x.txt | xargs -I {} sh -c "cat {} | tail -1" | sort -n -k4 | tail -1 #most -||-
