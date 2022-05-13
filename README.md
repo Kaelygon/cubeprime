@@ -1,3 +1,4 @@
+#readme raw
 https://oeis.org/A157026/b157026.txt
 A157026 		Primes p with the property that p^3=a^3+b^3+c^3
 
