@@ -14,7 +14,7 @@ trap ctrl_c INT
 function ctrl_c() {
 
 	pkill -f ./${prog}
-	laso=$( ls ./*x.txt | xargs -I {} sh -c "cat {} | tail -1" | sort -n -k4 | head -1 | grep -o '[^ ]\+$' ) #least progressed core 
+	laso=$( ls ./${wk}/*x.txt | xargs -I {} sh -c "cat {} | tail -1" | sort -n -k4 | head -1 | grep -o '[^ ]\+$' ) #least progressed core 
 	echo "laso: $laso"
 
 	echo -n $laso > ./$wk/lastSolve.txt

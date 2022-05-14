@@ -6,6 +6,8 @@
 //singlePrimeCube [thread] [thread count] [start] [P]
 //
 
+using namespace std;
+
 #include "functions.h"
 
 int main( int argc, char *argv[] ){
@@ -33,9 +35,9 @@ int main( int argc, char *argv[] ){
 	static const __uint128_t s=nuse+1; 
 	static const __uint128_t t=tstart;
 
-	//calculate B range offsets per thread
-	static const __uint64_t bend=s-cc; //B end
-	static const __uint32_t binc=1+tc; //B increment
+	//calculate A range offsets per thread
+	static const __uint64_t asrt=cc; //A start
+	static const __uint32_t ainc=1+tc; //A increment
 
 	static const __uint128_t s3=s*s*s; //s^3
 	static const __uint128_t nuSe3=nuse*nuse*nuse; //(s+1)^3
@@ -48,20 +50,17 @@ int main( int argc, char *argv[] ){
 
 	clock_t st=clock();
 
-	for(a=t;true;a++){// A
+	for(a=asrt;true;a+=ainc){// A //apply offsets per thread
 
 		a3=a*a*a;
 		if(a3>nuSe3){break;}
-		if( a%256==0 ){
+		if( (a)%256==0 ){
 			cout << "#a[" << cc << "]: " << a << "\n";
 		}
-		for(
-			b= a+1+cc	; //apply offsets per thread
-			b< bend		;
-			b+=binc
-		){// B
+		
+		for( b=a+1; b<s; b++){// B
 
-			b3=b*b*b; //get cube from vector
+			b3=b*b*b;
 			ab3=a3+b3;
 
 			if(ab3>nuSe3){break;}
