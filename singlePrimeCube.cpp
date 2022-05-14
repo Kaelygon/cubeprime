@@ -36,7 +36,7 @@ int main( int argc, char *argv[] ){
 	static const __uint128_t t=tstart;
 
 	//calculate A range offsets per thread
-	static const __uint64_t asrt=cc; //A start
+	static const __uint64_t asrt=t+cc; //A start
 	static const __uint32_t ainc=1+tc; //A increment
 
 	static const __uint128_t s3=s*s*s; //s^3
@@ -54,7 +54,7 @@ int main( int argc, char *argv[] ){
 
 		a3=a*a*a;
 		if(a3>nuSe3){break;}
-		if( (a)%256==0 ){
+		if( (a-cc)%256==0 ){
 			cout << "#a[" << cc << "]: " << a << "\n";
 		}
 		
