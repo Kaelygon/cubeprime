@@ -10,6 +10,8 @@ using namespace std;
 
 #include "functions.h"
 
+#define logSearch 1
+
 int main( int argc, char *argv[] ){
 
 	//threads
@@ -69,8 +71,27 @@ int main( int argc, char *argv[] ){
 
 				c3=c*c*c;
 				if((ab3+c3)>nuSe3){break;}
-				
-				//binary search c3
+
+//search algorithms for C	
+#if logSearch
+				//log search c //faster with large numbers, tend>30000
+				__uint128_t targ=nuSe3-ab3;
+				for(int inci=ui128log10(c); inci>=0; inci-=1){ //test increment 10^i , 10^(i-1) ... 10^2, 10^1
+
+					__uint128_t inc = ui128pow10(inci);
+					while(c*c*c<targ){
+						c+=inc;
+					}
+					c-=inc;
+				}
+				while(c*c*c<targ){ //1 increment
+					c+=1;
+				}
+
+				c3=c*c*c;
+				abc3=ab3+c3;
+#else
+				//binary search c
 				upb = nuse-1;	//upper bound
 				cur = (c+upb)/2;	//current estimate
 				while(c <= upb)
@@ -87,6 +108,7 @@ int main( int argc, char *argv[] ){
 					}
 					cur = (c+upb)/2;
 				}
+#endif
 
 				if(abc3!=nuSe3){continue;}
 
