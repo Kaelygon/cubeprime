@@ -47,8 +47,8 @@ int main( int argc, char *argv[] ){
 	__uint64_t found=0; 
 	
 	//init vars
-	__uint128_t a3,b3,c3,ab3,abc3;
-	__uint64_t a,b,c,upb,cur;
+	__uint128_t a3,b3,c3,ab3,abc3,c;
+	__uint64_t a,b,upb,cur;
 
 	clock_t st=clock();
 
@@ -120,7 +120,7 @@ int main( int argc, char *argv[] ){
 					<< " = "
 					<< " a:" << a
 					<< " b:" << b
-					<< " c:" << c
+					<< " c:" << ui128tos(c)
 					<< "\n"	
 				;							
 			//EOF C
